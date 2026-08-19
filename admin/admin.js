@@ -176,7 +176,8 @@ const NAV_ITEMS = [
     id: "referrals",
     label: "Referrals",
     icon: "🔗",
-    permission: "referrals"
+    permission: "referrals",
+    ready: true
   },
 
   {
@@ -778,6 +779,18 @@ adminNav.addEventListener(
 
       window.location.href =
         "wallets.html";
+
+      return;
+
+    }
+
+
+    /* ---------- REFERRALS ---------- */
+
+    if (navId === "referrals") {
+
+      window.location.href =
+        "referrals.html";
 
       return;
 
