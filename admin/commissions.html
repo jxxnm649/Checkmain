@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Vendors — Bestify Admin</title>
+  <title>Commissions — Bestify Admin</title>
 
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../design-system.css">
@@ -60,7 +60,8 @@
         </button>
 
         <button
-          class="bf-admin-nav-item bf-admin-nav-active">
+          class="bf-admin-nav-item"
+          onclick="location.href='vendors.html'">
           🏬
           <span>Vendors</span>
         </button>
@@ -80,8 +81,7 @@
         </button>
 
         <button
-          class="bf-admin-nav-item"
-          onclick="location.href='commissions.html'">
+          class="bf-admin-nav-item bf-admin-nav-active">
           🧮
           <span>Commissions</span>
         </button>
@@ -160,7 +160,7 @@
           </span>
 
           <span class="bf-admin-header-label">
-            Vendors
+            Commissions
           </span>
 
         </div>
@@ -174,22 +174,29 @@
         <section class="bf-admin-welcome">
 
           <h1>
-            Vendors
+            Commissions
           </h1>
 
           <p class="bf-admin-welcome-sub">
-            Onboard, edit, and manage seller accounts on Bestify.
+            Track platform commission earned from each vendor's sales.
           </p>
 
         </section>
 
 
+        <!-- Summary -->
+        <div
+          id="commissionsSummary"
+          style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+        </div>
+
+
         <div style="margin-bottom:20px;">
           <button
             type="button"
-            id="addVendorBtn"
+            id="addCommissionBtn"
             class="bf-btn bf-btn-primary">
-            + Add Vendor
+            + Add Commission Entry
           </button>
         </div>
 
@@ -199,40 +206,35 @@
 
           <input
             type="search"
-            id="vendorSearch"
+            id="commissionSearch"
             class="bf-input"
-            placeholder="Search by shop name, owner, or mobile..."
+            placeholder="Search by vendor name..."
             style="flex:1; min-width:220px; max-width:500px;">
 
-          <select id="vendorStatusFilter" class="bf-select" style="max-width:170px;">
+          <select id="commissionStatusFilter" class="bf-select" style="max-width:170px;">
             <option value="All">All Status</option>
-            <option value="Active">Active</option>
             <option value="Pending">Pending</option>
-            <option value="Blocked">Blocked</option>
+            <option value="Collected">Collected</option>
           </select>
 
         </div>
 
 
-        <!-- Vendor count -->
+        <!-- Commission count -->
         <div
-          id="vendorCount"
+          id="commissionCount"
           style="margin-bottom:15px;font-weight:600;">
-          Loading vendors...
+          Loading commissions...
         </div>
 
 
-        <!-- Vendors -->
+        <!-- Commissions -->
         <div
-          id="vendorsList"
-          style="
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-            gap:16px;
-          ">
+          id="commissionsList"
+          style="display:flex; flex-direction:column; gap:12px;">
 
           <div class="bf-card" style="padding:20px;">
-            Loading vendors...
+            Loading commissions...
           </div>
 
         </div>
@@ -244,70 +246,53 @@
   </div>
 
 
-  <!-- Add / Edit Vendor Modal -->
-  <div id="vendorFormModal" class="bf-modal-overlay">
+  <!-- Add Commission Modal -->
+  <div id="commissionFormModal" class="bf-modal-overlay">
     <div class="bf-modal">
       <button
         type="button"
         class="bf-modal-close"
-        id="vendorFormCloseBtn"
+        id="commissionFormCloseBtn"
         aria-label="Close">
         ✕
       </button>
 
-      <h2 class="bf-modal-title" id="vendorFormTitle">Add Vendor</h2>
+      <h2 class="bf-modal-title">Add Commission Entry</h2>
 
-      <form id="vendorForm">
+      <form id="commissionForm">
 
         <div class="bf-field">
-          <label class="bf-label">Shop / Business Name</label>
-          <input type="text" id="shopName" class="bf-input" required>
+          <label class="bf-label">Vendor</label>
+          <select id="commissionVendorSelect" class="bf-select" required>
+            <option value="">Select a vendor...</option>
+          </select>
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">Owner Name</label>
-          <input type="text" id="ownerName" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Email</label>
-          <input type="email" id="vendorEmail" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Mobile</label>
-          <input type="tel" id="vendorPhone" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Category</label>
-          <input type="text" id="vendorCategory" class="bf-input" placeholder="e.g. Mobile Accessories">
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Address</label>
-          <textarea id="vendorAddress" class="bf-textarea"></textarea>
+          <label class="bf-label">Order Amount (₹)</label>
+          <input type="number" id="commissionOrderAmount" class="bf-input" min="0" step="0.01" required>
         </div>
 
         <div class="bf-field">
           <label class="bf-label">Commission Rate (%)</label>
-          <input type="number" id="commissionRate" class="bf-input" min="0" max="100" value="10">
+          <input type="number" id="commissionRateInput" class="bf-input" min="0" max="100" step="0.01" value="10" required>
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">Status</label>
-          <select id="vendorStatus" class="bf-select">
-            <option value="Pending">Pending</option>
-            <option value="Active">Active</option>
-            <option value="Blocked">Blocked</option>
-          </select>
+          <label class="bf-label">Commission Amount (₹) — auto-calculated</label>
+          <input type="number" id="commissionAmount" class="bf-input" min="0" step="0.01" value="0.00" readonly>
+        </div>
+
+        <div class="bf-field">
+          <label class="bf-label">Note (optional)</label>
+          <input type="text" id="commissionNote" class="bf-input" placeholder="e.g. Order #1234">
         </div>
 
         <button
           type="submit"
-          id="vendorFormSubmitBtn"
+          id="commissionFormSubmitBtn"
           class="bf-btn bf-btn-primary bf-btn-block">
-          Save Vendor
+          Save Commission
         </button>
 
       </form>
@@ -315,7 +300,7 @@
   </div>
 
 
-  <script type="module" src="vendors.js"></script>
+  <script type="module" src="commissions.js"></script>
 
 </body>
 </html>

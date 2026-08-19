@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Vendors — Bestify Admin</title>
+  <title>Chats — Bestify Admin</title>
 
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../design-system.css">
@@ -60,7 +60,8 @@
         </button>
 
         <button
-          class="bf-admin-nav-item bf-admin-nav-active">
+          class="bf-admin-nav-item"
+          onclick="location.href='vendors.html'">
           🏬
           <span>Vendors</span>
         </button>
@@ -108,8 +109,7 @@
         </button>
 
         <button
-          class="bf-admin-nav-item"
-          onclick="location.href='chats.html'">
+          class="bf-admin-nav-item bf-admin-nav-active">
           💬
           <span>Chats</span>
         </button>
@@ -160,7 +160,7 @@
           </span>
 
           <span class="bf-admin-header-label">
-            Vendors
+            Chats
           </span>
 
         </div>
@@ -174,11 +174,11 @@
         <section class="bf-admin-welcome">
 
           <h1>
-            Vendors
+            Chats
           </h1>
 
           <p class="bf-admin-welcome-sub">
-            Onboard, edit, and manage seller accounts on Bestify.
+            Message customers directly and keep every conversation in one place.
           </p>
 
         </section>
@@ -187,52 +187,41 @@
         <div style="margin-bottom:20px;">
           <button
             type="button"
-            id="addVendorBtn"
+            id="startChatBtn"
             class="bf-btn bf-btn-primary">
-            + Add Vendor
+            + Start New Chat
           </button>
         </div>
 
 
-        <!-- Search + filter -->
-        <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
+        <!-- Search -->
+        <div style="margin-bottom:20px;">
 
           <input
             type="search"
-            id="vendorSearch"
+            id="chatSearch"
             class="bf-input"
-            placeholder="Search by shop name, owner, or mobile..."
-            style="flex:1; min-width:220px; max-width:500px;">
-
-          <select id="vendorStatusFilter" class="bf-select" style="max-width:170px;">
-            <option value="All">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Pending">Pending</option>
-            <option value="Blocked">Blocked</option>
-          </select>
+            placeholder="Search by customer name..."
+            style="width:100%; max-width:500px;">
 
         </div>
 
 
-        <!-- Vendor count -->
+        <!-- Chat count -->
         <div
-          id="vendorCount"
+          id="chatCount"
           style="margin-bottom:15px;font-weight:600;">
-          Loading vendors...
+          Loading chats...
         </div>
 
 
-        <!-- Vendors -->
+        <!-- Chats list -->
         <div
-          id="vendorsList"
-          style="
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-            gap:16px;
-          ">
+          id="chatsList"
+          style="display:flex; flex-direction:column; gap:12px;">
 
           <div class="bf-card" style="padding:20px;">
-            Loading vendors...
+            Loading chats...
           </div>
 
         </div>
@@ -244,70 +233,33 @@
   </div>
 
 
-  <!-- Add / Edit Vendor Modal -->
-  <div id="vendorFormModal" class="bf-modal-overlay">
+  <!-- Start Chat Modal -->
+  <div id="startChatModal" class="bf-modal-overlay">
     <div class="bf-modal">
       <button
         type="button"
         class="bf-modal-close"
-        id="vendorFormCloseBtn"
+        id="startChatCloseBtn"
         aria-label="Close">
         ✕
       </button>
 
-      <h2 class="bf-modal-title" id="vendorFormTitle">Add Vendor</h2>
+      <h2 class="bf-modal-title">Start New Chat</h2>
 
-      <form id="vendorForm">
-
-        <div class="bf-field">
-          <label class="bf-label">Shop / Business Name</label>
-          <input type="text" id="shopName" class="bf-input" required>
-        </div>
+      <form id="startChatForm">
 
         <div class="bf-field">
-          <label class="bf-label">Owner Name</label>
-          <input type="text" id="ownerName" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Email</label>
-          <input type="email" id="vendorEmail" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Mobile</label>
-          <input type="tel" id="vendorPhone" class="bf-input" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Category</label>
-          <input type="text" id="vendorCategory" class="bf-input" placeholder="e.g. Mobile Accessories">
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Address</label>
-          <textarea id="vendorAddress" class="bf-textarea"></textarea>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Commission Rate (%)</label>
-          <input type="number" id="commissionRate" class="bf-input" min="0" max="100" value="10">
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Status</label>
-          <select id="vendorStatus" class="bf-select">
-            <option value="Pending">Pending</option>
-            <option value="Active">Active</option>
-            <option value="Blocked">Blocked</option>
+          <label class="bf-label">Customer</label>
+          <select id="startChatUserSelect" class="bf-select" required>
+            <option value="">Select a user...</option>
           </select>
         </div>
 
         <button
           type="submit"
-          id="vendorFormSubmitBtn"
+          id="startChatSubmitBtn"
           class="bf-btn bf-btn-primary bf-btn-block">
-          Save Vendor
+          Start Chat
         </button>
 
       </form>
@@ -315,7 +267,49 @@
   </div>
 
 
-  <script type="module" src="vendors.js"></script>
+  <!-- Chat Thread Modal -->
+  <div id="chatThreadModal" class="bf-modal-overlay">
+    <div class="bf-modal">
+      <button
+        type="button"
+        class="bf-modal-close"
+        id="chatThreadCloseBtn"
+        aria-label="Close">
+        ✕
+      </button>
+
+      <h2 class="bf-modal-title" id="chatThreadTitle">Conversation</h2>
+
+      <div
+        id="chatMessages"
+        style="max-height:340px; overflow-y:auto; padding:8px 4px; margin-bottom:14px; border-top:1px solid var(--line, #E4DED2); border-bottom:1px solid var(--line, #E4DED2);">
+        Loading messages...
+      </div>
+
+      <form id="chatReplyForm" style="display:flex; gap:8px;">
+
+        <input
+          type="text"
+          id="chatReplyInput"
+          class="bf-input"
+          placeholder="Type a message..."
+          autocomplete="off"
+          style="flex:1;">
+
+        <button
+          type="submit"
+          id="chatReplySendBtn"
+          class="bf-btn bf-btn-primary">
+          Send
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+
+  <script type="module" src="chats.js"></script>
 
 </body>
 </html>

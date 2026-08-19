@@ -162,14 +162,16 @@ const NAV_ITEMS = [
     id: "commissions",
     label: "Commissions",
     icon: "🧮",
-    permission: "commissions"
+    permission: "commissions",
+    ready: true
   },
 
   {
     id: "cashback",
     label: "Cashback",
     icon: "💸",
-    permission: "cashback"
+    permission: "cashback",
+    ready: true
   },
 
   {
@@ -184,42 +186,48 @@ const NAV_ITEMS = [
     id: "repairs",
     label: "Repairs",
     icon: "🔧",
-    permission: "repairs"
+    permission: "repairs",
+    ready: true
   },
 
   {
     id: "chats",
     label: "Chats",
     icon: "💬",
-    permission: "chats"
+    permission: "chats",
+    ready: true
   },
 
   {
     id: "notifications",
     label: "Notifications",
     icon: "🔔",
-    permission: "notifications"
+    permission: "notifications",
+    ready: true
   },
 
   {
     id: "reports",
     label: "Reports",
     icon: "📈",
-    permission: "reports"
+    permission: "reports",
+    ready: true
   },
 
   {
     id: "audit-log",
     label: "Audit Log",
     icon: "🗂️",
-    permission: "auditLog"
+    permission: "auditLog",
+    ready: true
   },
 
   {
     id: "settings",
     label: "Settings",
     icon: "⚙️",
-    permission: "settings"
+    permission: "settings",
+    ready: true
   }
 
 ];
@@ -785,6 +793,30 @@ adminNav.addEventListener(
     }
 
 
+    /* ---------- COMMISSIONS ---------- */
+
+    if (navId === "commissions") {
+
+      window.location.href =
+        "commissions.html";
+
+      return;
+
+    }
+
+
+    /* ---------- CASHBACK ---------- */
+
+    if (navId === "cashback") {
+
+      window.location.href =
+        "cashback.html";
+
+      return;
+
+    }
+
+
     /* ---------- REFERRALS ---------- */
 
     if (navId === "referrals") {
@@ -797,11 +829,83 @@ adminNav.addEventListener(
     }
 
 
+    /* ---------- REPAIRS ---------- */
+
+    if (navId === "repairs") {
+
+      window.location.href =
+        "repairs.html";
+
+      return;
+
+    }
+
+
+    /* ---------- CHATS ---------- */
+
+    if (navId === "chats") {
+
+      window.location.href =
+        "chats.html";
+
+      return;
+
+    }
+
+
     /* ---------- DASHBOARD ---------- */
 
     if (navId === "dashboard") {
 
       closeDrawer();
+
+      return;
+
+    }
+
+
+    /* ---------- NOTIFICATIONS ---------- */
+
+    if (navId === "notifications") {
+
+      window.location.href =
+        "notifications.html";
+
+      return;
+
+    }
+
+
+    /* ---------- REPORTS ---------- */
+
+    if (navId === "reports") {
+
+      window.location.href =
+        "reports.html";
+
+      return;
+
+    }
+
+
+    /* ---------- AUDIT LOG ---------- */
+
+    if (navId === "audit-log") {
+
+      window.location.href =
+        "audit-log.html";
+
+      return;
+
+    }
+
+
+    /* ---------- SETTINGS ---------- */
+
+    if (navId === "settings") {
+
+      window.location.href =
+        "settings.html";
 
       return;
 
