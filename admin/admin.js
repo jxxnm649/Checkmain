@@ -138,14 +138,16 @@ const NAV_ITEMS = [
     id: "payments",
     label: "Payments",
     icon: "💳",
-    permission: "payments"
+    permission: "payments",
+    ready: true
   },
 
   {
     id: "refunds",
     label: "Refunds",
     icon: "↩️",
-    permission: "refunds"
+    permission: "refunds",
+    ready: true
   },
 
   {
@@ -742,6 +744,27 @@ adminNav.addEventListener(
 
       window.location.href =
         "vendors.html";
+
+      return;
+
+    }
+
+
+    /* ---------- PAYMENTS & REFUNDS ---------- */
+
+    if (navId === "payments") {
+
+      window.location.href =
+        "payments.html";
+
+      return;
+
+    }
+
+    if (navId === "refunds") {
+
+      window.location.href =
+        "payments.html#refunds";
 
       return;
 
