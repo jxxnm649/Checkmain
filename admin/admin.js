@@ -106,7 +106,8 @@ const NAV_ITEMS = [
     id: "users",
     label: "Users",
     icon: "👥",
-    permission: "users"
+    permission: "users",
+    ready: true
   },
 
   {
@@ -320,6 +321,9 @@ function renderNav(claims) {
           ? "bf-admin-nav-active"
           : "";
 
+      const isReady =
+        item.active || item.ready === true;
+
 
       return `
 
@@ -337,7 +341,7 @@ function renderNav(claims) {
           </span>
 
           ${
-            item.active
+            isReady
               ? ""
               : `<span class="bf-admin-nav-soon">
                    Soon
