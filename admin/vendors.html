@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Products — Bestify Admin</title>
+  <title>Vendors — Bestify Admin</title>
 
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../design-system.css">
@@ -46,7 +46,8 @@
         </button>
 
         <button
-          class="bf-admin-nav-item bf-admin-nav-active">
+          class="bf-admin-nav-item"
+          onclick="location.href='products.html'">
           📦
           <span>Products</span>
         </button>
@@ -59,8 +60,7 @@
         </button>
 
         <button
-          class="bf-admin-nav-item"
-          onclick="location.href='vendors.html'">
+          class="bf-admin-nav-item bf-admin-nav-active">
           🏬
           <span>Vendors</span>
         </button>
@@ -83,7 +83,7 @@
           </span>
 
           <span class="bf-admin-header-label">
-            Products
+            Vendors
           </span>
 
         </div>
@@ -97,11 +97,11 @@
         <section class="bf-admin-welcome">
 
           <h1>
-            Products
+            Vendors
           </h1>
 
           <p class="bf-admin-welcome-sub">
-            Add, edit, and manage your Bestify catalog.
+            Onboard, edit, and manage seller accounts on Bestify.
           </p>
 
         </section>
@@ -110,51 +110,52 @@
         <div style="margin-bottom:20px;">
           <button
             type="button"
-            id="addProductBtn"
+            id="addVendorBtn"
             class="bf-btn bf-btn-primary">
-            + Add Product
+            + Add Vendor
           </button>
         </div>
 
 
-        <!-- Search -->
+        <!-- Search + filter -->
         <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
 
           <input
             type="search"
-            id="productSearch"
+            id="vendorSearch"
             class="bf-input"
-            placeholder="Search products by name or category..."
+            placeholder="Search by shop name, owner, or mobile..."
             style="flex:1; min-width:220px; max-width:500px;">
 
-          <select id="productStatusFilter" class="bf-select" style="max-width:170px;">
+          <select id="vendorStatusFilter" class="bf-select" style="max-width:170px;">
             <option value="All">All Status</option>
             <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Pending">Pending</option>
+            <option value="Blocked">Blocked</option>
           </select>
 
         </div>
 
 
-        <!-- Product count -->
+        <!-- Vendor count -->
         <div
-          id="productCount"
+          id="vendorCount"
           style="margin-bottom:15px;font-weight:600;">
-          Loading products...
+          Loading vendors...
         </div>
 
 
-        <!-- Products -->
+        <!-- Vendors -->
         <div
-          id="productsList"
+          id="vendorsList"
           style="
             display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
             gap:16px;
           ">
 
           <div class="bf-card" style="padding:20px;">
-            Loading products...
+            Loading vendors...
           </div>
 
         </div>
@@ -166,80 +167,70 @@
   </div>
 
 
-  <!-- Add / Edit Product Modal -->
-  <div id="productFormModal" class="bf-modal-overlay">
+  <!-- Add / Edit Vendor Modal -->
+  <div id="vendorFormModal" class="bf-modal-overlay">
     <div class="bf-modal">
       <button
         type="button"
         class="bf-modal-close"
-        id="productFormCloseBtn"
+        id="vendorFormCloseBtn"
         aria-label="Close">
         ✕
       </button>
 
-      <h2 class="bf-modal-title" id="productFormTitle">Add Product</h2>
+      <h2 class="bf-modal-title" id="vendorFormTitle">Add Vendor</h2>
 
-      <form id="productForm">
+      <form id="vendorForm">
 
         <div class="bf-field">
-          <label class="bf-label">Product Images (first one is main image)</label>
-          <input type="file" id="imageFile" accept="image/*" multiple>
-          <div id="previewRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+          <label class="bf-label">Shop / Business Name</label>
+          <input type="text" id="shopName" class="bf-input" required>
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">Product Name</label>
-          <input type="text" id="productName" class="bf-input" required>
+          <label class="bf-label">Owner Name</label>
+          <input type="text" id="ownerName" class="bf-input" required>
+        </div>
+
+        <div class="bf-field">
+          <label class="bf-label">Email</label>
+          <input type="email" id="vendorEmail" class="bf-input" required>
+        </div>
+
+        <div class="bf-field">
+          <label class="bf-label">Mobile</label>
+          <input type="tel" id="vendorPhone" class="bf-input" required>
         </div>
 
         <div class="bf-field">
           <label class="bf-label">Category</label>
-          <input type="text" id="category" class="bf-input" required>
+          <input type="text" id="vendorCategory" class="bf-input" placeholder="e.g. Mobile Accessories">
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">MRP (original price, optional)</label>
-          <input type="number" id="mrp" class="bf-input" min="0">
+          <label class="bf-label">Address</label>
+          <textarea id="vendorAddress" class="bf-textarea"></textarea>
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">Selling Price</label>
-          <input type="number" id="price" class="bf-input" min="0" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Stock Quantity</label>
-          <input type="number" id="stock" class="bf-input" min="0" required>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Description</label>
-          <textarea id="description" class="bf-textarea" required></textarea>
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Sizes (comma separated, optional)</label>
-          <input type="text" id="sizes" class="bf-input" placeholder="S, M, L">
-        </div>
-
-        <div class="bf-field">
-          <label class="bf-label">Colours (comma separated, optional)</label>
-          <input type="text" id="colours" class="bf-input" placeholder="Red, Blue, Black">
+          <label class="bf-label">Commission Rate (%)</label>
+          <input type="number" id="commissionRate" class="bf-input" min="0" max="100" value="10">
         </div>
 
         <div class="bf-field">
           <label class="bf-label">Status</label>
-          <select id="status" class="bf-select">
+          <select id="vendorStatus" class="bf-select">
+            <option value="Pending">Pending</option>
             <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Blocked">Blocked</option>
           </select>
         </div>
 
         <button
           type="submit"
-          id="productFormSubmitBtn"
+          id="vendorFormSubmitBtn"
           class="bf-btn bf-btn-primary bf-btn-block">
-          Save Product
+          Save Vendor
         </button>
 
       </form>
@@ -247,7 +238,7 @@
   </div>
 
 
-  <script type="module" src="products.js"></script>
+  <script type="module" src="vendors.js"></script>
 
 </body>
 </html>

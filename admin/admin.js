@@ -114,7 +114,8 @@ const NAV_ITEMS = [
     id: "vendors",
     label: "Vendors",
     icon: "🏬",
-    permission: "vendors"
+    permission: "vendors",
+    ready: true
   },
 
   {
@@ -729,6 +730,18 @@ adminNav.addEventListener(
 
       window.location.href =
         "orders.html";
+
+      return;
+
+    }
+
+
+    /* ---------- VENDORS ---------- */
+
+    if (navId === "vendors") {
+
+      window.location.href =
+        "vendors.html";
 
       return;
 
