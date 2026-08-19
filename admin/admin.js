@@ -121,7 +121,8 @@ const NAV_ITEMS = [
     id: "products",
     label: "Products",
     icon: "📦",
-    permission: "products"
+    permission: "products",
+    ready: true
   },
 
   {
@@ -703,6 +704,18 @@ adminNav.addEventListener(
 
       window.location.href =
         "users.html";
+
+      return;
+
+    }
+
+
+    /* ---------- PRODUCTS ---------- */
+
+    if (navId === "products") {
+
+      window.location.href =
+        "products.html";
 
       return;
 
