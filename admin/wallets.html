@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Payments & Refunds — Bestify Admin</title>
+  <title>Wallets — Bestify Admin</title>
 
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../design-system.css">
@@ -67,14 +67,14 @@
         </button>
 
         <button
-          class="bf-admin-nav-item bf-admin-nav-active">
+          class="bf-admin-nav-item"
+          onclick="location.href='payments.html'">
           💳
           <span>Payments</span>
         </button>
 
         <button
-          class="bf-admin-nav-item"
-          onclick="location.href='wallets.html'">
+          class="bf-admin-nav-item bf-admin-nav-active">
           👛
           <span>Wallets</span>
         </button>
@@ -97,7 +97,7 @@
           </span>
 
           <span class="bf-admin-header-label">
-            Payments &amp; Refunds
+            Wallets
           </span>
 
         </div>
@@ -111,70 +111,54 @@
         <section class="bf-admin-welcome">
 
           <h1>
-            Payments &amp; Refunds
+            Wallets
           </h1>
 
           <p class="bf-admin-welcome-sub">
-            Track order payments and manage refunds.
+            View customer wallet balances and credit or debit funds.
           </p>
 
         </section>
 
 
-        <!-- Summary cards -->
+        <!-- Summary -->
         <div
-          id="paymentsSummary"
+          id="walletsSummary"
           style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
         </div>
 
 
         <!-- Tabs -->
         <div style="display:flex; gap:8px; margin-bottom:20px;">
-          <button type="button" id="paymentsTabBtn" class="bf-btn bf-btn-primary bf-btn-sm">Payments</button>
-          <button type="button" id="refundsTabBtn" class="bf-btn bf-btn-ghost bf-btn-sm">Refunds</button>
+          <button type="button" id="balancesTabBtn" class="bf-btn bf-btn-primary bf-btn-sm">Balances</button>
+          <button type="button" id="transactionsTabBtn" class="bf-btn bf-btn-ghost bf-btn-sm">Transactions</button>
         </div>
 
 
-        <!-- Payments panel -->
-        <div id="paymentsPanel">
+        <!-- Balances panel -->
+        <div id="balancesPanel">
 
-          <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
-
+          <div style="margin-bottom:20px;">
             <input
               type="search"
-              id="paymentSearch"
+              id="walletSearch"
               class="bf-input"
-              placeholder="Search by customer, mobile, or order ID..."
-              style="flex:1; min-width:220px; max-width:500px;">
-
-            <select id="paymentMethodFilter" class="bf-select" style="max-width:160px;">
-              <option value="All">All Methods</option>
-              <option value="cod">Cash on Delivery</option>
-              <option value="online">Paid Online</option>
-            </select>
-
-            <select id="paymentStatusFilter" class="bf-select" style="max-width:160px;">
-              <option value="All">All Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Paid">Paid</option>
-              <option value="Failed">Failed</option>
-              <option value="Refunded">Refunded</option>
-            </select>
-
+              placeholder="Search by name, email, or mobile..."
+              style="max-width:500px;">
           </div>
 
           <div
-            id="paymentsCount"
+            id="walletsCount"
             style="margin-bottom:15px;font-weight:600;">
-            Loading payments...
+            Loading users...
           </div>
 
           <div
-            id="paymentsList"
+            id="walletsList"
             style="display:flex; flex-direction:column; gap:12px;">
 
             <div class="bf-card" style="padding:20px;">
-              Loading payments...
+              Loading users...
             </div>
 
           </div>
@@ -182,21 +166,21 @@
         </div>
 
 
-        <!-- Refunds panel -->
-        <div id="refundsPanel" style="display:none;">
+        <!-- Transactions panel -->
+        <div id="transactionsPanel" style="display:none;">
 
           <div
-            id="refundsCount"
+            id="transactionsCount"
             style="margin-bottom:15px;font-weight:600;">
-            Loading refunds...
+            Loading transactions...
           </div>
 
           <div
-            id="refundsList"
+            id="transactionsList"
             style="display:flex; flex-direction:column; gap:12px;">
 
             <div class="bf-card" style="padding:20px;">
-              Loading refunds...
+              Loading transactions...
             </div>
 
           </div>
@@ -210,41 +194,54 @@
   </div>
 
 
-  <!-- Refund Modal -->
-  <div id="refundFormModal" class="bf-modal-overlay">
+  <!-- Credit / Debit Modal -->
+  <div id="walletAdjustModal" class="bf-modal-overlay">
     <div class="bf-modal">
       <button
         type="button"
         class="bf-modal-close"
-        id="refundFormCloseBtn"
+        id="walletAdjustCloseBtn"
         aria-label="Close">
         ✕
       </button>
 
-      <h2 class="bf-modal-title">Process Refund</h2>
+      <h2 class="bf-modal-title" id="walletAdjustTitle">Adjust Wallet</h2>
 
-      <form id="refundForm">
+      <form id="walletAdjustForm">
 
         <div class="bf-field">
-          <label class="bf-label">Order</label>
-          <input type="text" id="refundOrderLabel" class="bf-input" disabled>
+          <label class="bf-label">Customer</label>
+          <input type="text" id="walletAdjustCustomer" class="bf-input" disabled>
         </div>
 
         <div class="bf-field">
-          <label class="bf-label">Refund Amount (₹)</label>
-          <input type="number" id="refundAmount" class="bf-input" min="0" required>
+          <label class="bf-label">Current Balance</label>
+          <input type="text" id="walletAdjustCurrentBalance" class="bf-input" disabled>
+        </div>
+
+        <div class="bf-field">
+          <label class="bf-label">Action</label>
+          <select id="walletAdjustType" class="bf-select">
+            <option value="credit">Credit (add funds)</option>
+            <option value="debit">Debit (remove funds)</option>
+          </select>
+        </div>
+
+        <div class="bf-field">
+          <label class="bf-label">Amount (₹)</label>
+          <input type="number" id="walletAdjustAmount" class="bf-input" min="1" required>
         </div>
 
         <div class="bf-field">
           <label class="bf-label">Reason</label>
-          <textarea id="refundReason" class="bf-textarea" required></textarea>
+          <textarea id="walletAdjustReason" class="bf-textarea" required></textarea>
         </div>
 
         <button
           type="submit"
-          id="refundFormSubmitBtn"
+          id="walletAdjustSubmitBtn"
           class="bf-btn bf-btn-primary bf-btn-block">
-          Confirm Refund
+          Confirm
         </button>
 
       </form>
@@ -252,7 +249,7 @@
   </div>
 
 
-  <script type="module" src="payments.js"></script>
+  <script type="module" src="wallets.js"></script>
 
 </body>
 </html>

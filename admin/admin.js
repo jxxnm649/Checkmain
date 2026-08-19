@@ -154,7 +154,8 @@ const NAV_ITEMS = [
     id: "wallets",
     label: "Wallets",
     icon: "👛",
-    permission: "wallets"
+    permission: "wallets",
+    ready: true
   },
 
   {
@@ -765,6 +766,18 @@ adminNav.addEventListener(
 
       window.location.href =
         "payments.html#refunds";
+
+      return;
+
+    }
+
+
+    /* ---------- WALLETS ---------- */
+
+    if (navId === "wallets") {
+
+      window.location.href =
+        "wallets.html";
 
       return;
 
