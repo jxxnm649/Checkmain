@@ -21,6 +21,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const form = document.getElementById("vendorForm");
 const vendorsList = document.getElementById("vendorsList");
@@ -112,13 +114,21 @@ form.addEventListener("submit", async (e) => {
     if (editMode) {
 
       await updateDoc(doc(db, "vendors", editVendorId), vendorData);
+      await logAdminAction("Updated vendor", "Vendors", {
+        vendorId: editVendorId,
+        shopName: vendorData.shopName
+      });
       showToast("Vendor updated", "success");
 
     } else {
 
-      await addDoc(collection(db, "vendors"), {
+      const newDoc = await addDoc(collection(db, "vendors"), {
         ...vendorData,
         createdAt: serverTimestamp()
+      });
+      await logAdminAction("Added vendor", "Vendors", {
+        vendorId: newDoc.id,
+        shopName: vendorData.shopName
       });
       showToast("Vendor added", "success");
 
@@ -351,6 +361,12 @@ async function toggleBlockVendor(id, isCurrentlyBlocked) {
 
     await updateDoc(doc(db, "vendors", id), { status: nextStatus });
 
+    await logAdminAction(
+      nextStatus === "Blocked" ? "Blocked vendor" : "Unblocked vendor",
+      "Vendors",
+      { vendorId: id }
+    );
+
     const idx = allVendors.findIndex(v => v.id === id);
     if (idx !== -1) {
       allVendors[idx] = { ...allVendors[idx], status: nextStatus };
@@ -376,6 +392,8 @@ async function deleteVendor(id, name) {
   try {
 
     await deleteDoc(doc(db, "vendors", id));
+
+    await logAdminAction("Deleted vendor", "Vendors", { vendorId: id, name });
 
     allVendors = allVendors.filter(v => v.id !== id);
     renderVendorList();

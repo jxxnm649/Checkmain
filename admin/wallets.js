@@ -22,6 +22,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const walletsSummary = document.getElementById("walletsSummary");
 
@@ -361,6 +363,12 @@ walletAdjustForm.addEventListener("submit", async (e) => {
       balanceAfter: newBalance,
       createdAt: serverTimestamp()
     });
+
+    await logAdminAction(
+      type === "credit" ? "Credited wallet" : "Debited wallet",
+      "Wallets",
+      { userId: adjustUserId, amount, reason }
+    );
 
     const idx = allUsers.findIndex(u => u.id === adjustUserId);
     if (idx !== -1) {

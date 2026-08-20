@@ -22,6 +22,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const paymentsSummary = document.getElementById("paymentsSummary");
 
@@ -355,6 +357,8 @@ async function applyPaymentStatus(id, newStatus) {
 
     await updateDoc(doc(db, "orders", id), { paymentStatus: newStatus });
 
+    await logAdminAction("Updated payment status", "Payments", { orderId: id, newStatus });
+
     const idx = allOrders.findIndex(o => o.id === id);
     if (idx !== -1) {
       allOrders[idx] = { ...allOrders[idx], paymentStatus: newStatus };
@@ -428,6 +432,11 @@ refundForm.addEventListener("submit", async (e) => {
     });
 
     await updateDoc(doc(db, "orders", refundOrderId), { paymentStatus: "Refunded" });
+
+    await logAdminAction("Issued refund", "Payments", {
+      orderId: refundOrderId,
+      amount: Number(refundAmount.value) || 0
+    });
 
     const idx = allOrders.findIndex(o => o.id === refundOrderId);
     if (idx !== -1) {

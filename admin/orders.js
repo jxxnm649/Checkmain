@@ -20,6 +20,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const ordersList = document.getElementById("ordersList");
 const orderCount = document.getElementById("orderCount");
@@ -307,6 +309,11 @@ if (orderDetailsContent) {
     try {
 
       await updateDoc(doc(db, "orders", currentDetailsOrderId), { status: newStatus });
+
+      await logAdminAction("Updated order status", "Orders", {
+        orderId: currentDetailsOrderId,
+        newStatus
+      });
 
       const idx = allOrders.findIndex(o => o.id === currentDetailsOrderId);
       if (idx !== -1) {

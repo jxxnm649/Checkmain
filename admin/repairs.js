@@ -23,6 +23,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const repairsSummary = document.getElementById("repairsSummary");
 const addRepairBtn = document.getElementById("addRepairBtn");
@@ -200,6 +202,11 @@ repairForm.addEventListener("submit", async (e) => {
       estimatedCost: Number(repairEstimatedCost.value) || 0,
       status: "Received",
       createdAt: serverTimestamp()
+    });
+
+    await logAdminAction("Logged repair request", "Repairs", {
+      customerName: repairCustomerName.value.trim(),
+      device: repairDevice.value.trim()
     });
 
     showToast("Repair request added", "success");
@@ -390,6 +397,11 @@ if (repairDetailsContent) {
 
         await updateDoc(doc(db, "repairs", currentDetailsRepairId), { status: newStatus });
 
+        await logAdminAction("Updated repair status", "Repairs", {
+          repairId: currentDetailsRepairId,
+          newStatus
+        });
+
         const idx = allRepairs.findIndex(r => r.id === currentDetailsRepairId);
         if (idx !== -1) {
           allRepairs[idx] = { ...allRepairs[idx], status: newStatus };
@@ -424,6 +436,10 @@ if (repairDetailsContent) {
       try {
 
         await deleteDoc(doc(db, "repairs", currentDetailsRepairId));
+
+        await logAdminAction("Deleted repair request", "Repairs", {
+          repairId: currentDetailsRepairId
+        });
 
         allRepairs = allRepairs.filter(r => r.id !== currentDetailsRepairId);
 

@@ -23,6 +23,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const commissionsSummary = document.getElementById("commissionsSummary");
 const addCommissionBtn = document.getElementById("addCommissionBtn");
@@ -252,6 +254,11 @@ commissionForm.addEventListener("submit", async (e) => {
       createdAt: serverTimestamp()
     });
 
+    await logAdminAction("Added commission", "Commissions", {
+      vendorId,
+      commissionAmount: Number(commissionAmount.value) || 0
+    });
+
     showToast("Commission entry added", "success");
     closeModal("commissionFormModal");
     commissionForm.reset();
@@ -411,6 +418,8 @@ async function markCollected(commissionId) {
       collectedAt: serverTimestamp()
     });
 
+    await logAdminAction("Marked commission collected", "Commissions", { commissionId });
+
     const idx = allCommissions.findIndex(c => c.id === commissionId);
     if (idx !== -1) {
       allCommissions[idx] = { ...allCommissions[idx], status: "Collected" };
@@ -442,6 +451,8 @@ async function deleteCommission(commissionId) {
   try {
 
     await deleteDoc(doc(db, "commissions", commissionId));
+
+    await logAdminAction("Deleted commission", "Commissions", { commissionId });
 
     allCommissions = allCommissions.filter(c => c.id !== commissionId);
 

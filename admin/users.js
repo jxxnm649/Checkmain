@@ -21,6 +21,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const usersList = document.getElementById("usersList");
 const userCount = document.getElementById("userCount");
@@ -633,6 +635,8 @@ async function saveOrderStatus(orderId) {
   try {
     await updateDoc(doc(db, "orders", orderId), { status: newStatus });
 
+    await logAdminAction("Updated order status", "Users", { orderId, newStatus });
+
     const orderIndex = currentOrdersState.orders.findIndex(o => o.id === orderId);
     if (orderIndex !== -1) {
       currentOrdersState.orders[orderIndex].status = newStatus;
@@ -663,6 +667,8 @@ async function savePaymentStatus(orderId) {
 
   try {
     await updateDoc(doc(db, "orders", orderId), { paymentStatus: newPaymentStatus });
+
+    await logAdminAction("Updated payment status", "Users", { orderId, newPaymentStatus });
 
     const orderIndex = currentOrdersState.orders.findIndex(o => o.id === orderId);
     if (orderIndex !== -1) {
@@ -825,6 +831,8 @@ async function saveUserEdits(uid) {
   try {
     await updateDoc(doc(db, "users", uid), updates);
 
+    await logAdminAction("Updated user profile", "Users", { uid, ...updates });
+
     const idx = allUsers.findIndex(u => u.id === uid);
     if (idx !== -1) {
       allUsers[idx] = { ...allUsers[idx], ...updates };
@@ -854,6 +862,8 @@ async function toggleBlockUser(uid, isCurrentlyBlocked) {
   try {
     await updateDoc(doc(db, "users", uid), { blocked: nextBlocked });
 
+    await logAdminAction(nextBlocked ? "Blocked user" : "Unblocked user", "Users", { uid });
+
     const idx = allUsers.findIndex(u => u.id === uid);
     if (idx !== -1) {
       allUsers[idx] = { ...allUsers[idx], blocked: nextBlocked };
@@ -880,6 +890,8 @@ async function deleteUser(uid, label) {
 
   try {
     await deleteDoc(doc(db, "users", uid));
+
+    await logAdminAction("Deleted user", "Users", { uid, label });
 
     allUsers = allUsers.filter(u => u.id !== uid);
     renderUsers(allUsers);

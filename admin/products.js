@@ -20,6 +20,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const form = document.getElementById("productForm");
 const productsList = document.getElementById("productsList");
@@ -197,11 +199,19 @@ form.addEventListener("submit", async (e) => {
     if (editMode) {
 
       await updateDoc(doc(db, "products", editProductId), productData);
+      await logAdminAction("Updated product", "Products", {
+        productId: editProductId,
+        name: productData.productName
+      });
       showToast("Product updated", "success");
 
     } else {
 
-      await addDoc(collection(db, "products"), productData);
+      const newDoc = await addDoc(collection(db, "products"), productData);
+      await logAdminAction("Added product", "Products", {
+        productId: newDoc.id,
+        name: productData.productName
+      });
       showToast("Product added", "success");
 
     }
@@ -438,6 +448,8 @@ async function deleteProduct(id, name) {
   try {
 
     await deleteDoc(doc(db, "products", id));
+
+    await logAdminAction("Deleted product", "Products", { productId: id, name });
 
     allProducts = allProducts.filter(p => p.id !== id);
     renderProductList();

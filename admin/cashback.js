@@ -23,6 +23,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const cashbackSummary = document.getElementById("cashbackSummary");
 const addCashbackBtn = document.getElementById("addCashbackBtn");
@@ -242,6 +244,8 @@ cashbackForm.addEventListener("submit", async (e) => {
       createdAt: serverTimestamp()
     });
 
+    await logAdminAction("Added cashback entry", "Cashback", { userId, amount });
+
     showToast("Cashback entry added", "success");
     closeModal("cashbackFormModal");
     cashbackForm.reset();
@@ -420,6 +424,12 @@ async function markCredited(cashbackId) {
       creditedAt: serverTimestamp()
     });
 
+    await logAdminAction("Credited cashback to wallet", "Cashback", {
+      cashbackId,
+      userId: entry.userId,
+      amount: cashbackAmountValue
+    });
+
     const idx = allCashback.findIndex(c => c.id === cashbackId);
     if (idx !== -1) {
       allCashback[idx] = { ...allCashback[idx], status: "Credited" };
@@ -451,6 +461,8 @@ async function deleteCashback(cashbackId) {
   try {
 
     await deleteDoc(doc(db, "cashback", cashbackId));
+
+    await logAdminAction("Deleted cashback entry", "Cashback", { cashbackId });
 
     allCashback = allCashback.filter(c => c.id !== cashbackId);
 

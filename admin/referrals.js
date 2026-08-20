@@ -22,6 +22,8 @@ import {
   showToast
 } from "../design-system.js";
 
+import { logAdminAction } from "./audit.js";
+
 
 const referralsSummary = document.getElementById("referralsSummary");
 const addReferralBtn = document.getElementById("addReferralBtn");
@@ -214,6 +216,8 @@ referralForm.addEventListener("submit", async (e) => {
       createdAt: serverTimestamp()
     });
 
+    await logAdminAction("Added referral", "Referrals", { referrerId });
+
     showToast("Referral added", "success");
     closeModal("referralFormModal");
     referralForm.reset();
@@ -371,6 +375,12 @@ async function markRewarded(referralId) {
     await updateDoc(doc(db, "referrals", referralId), {
       status: "Rewarded",
       rewardedAt: serverTimestamp()
+    });
+
+    await logAdminAction("Credited referral reward", "Referrals", {
+      referralId,
+      referrerId: referral.referrerId,
+      amount: rewardAmount
     });
 
     const idx = allReferrals.findIndex(r => r.id === referralId);

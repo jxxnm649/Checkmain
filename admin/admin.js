@@ -406,13 +406,14 @@ async function loadDashboardMetrics() {
 
     /* ---------- VENDORS ---------- */
 
-    /*
-      Currently there is no vendors
-      collection in Firestore.
-    */
+    const vendorsSnapshot =
+      await getDocs(
+        collection(db, "vendors")
+      );
+
 
     vendorsCount.textContent =
-      "0";
+      vendorsSnapshot.size;
 
 
     /* ---------- REVENUE ---------- */
@@ -474,7 +475,7 @@ async function loadDashboardMetrics() {
       "Dashboard loaded:",
       {
         users: usersSnapshot.size,
-        vendors: 0,
+        vendors: vendorsSnapshot.size,
         orders: ordersSnapshot.size,
         revenue: revenue
       }
