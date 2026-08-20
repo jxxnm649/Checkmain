@@ -13,6 +13,15 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
+
+const functions = getFunctions();
+const createRazorpayOrder = httpsCallable(functions, "createRazorpayOrder");
+const verifyRazorpayPayment = httpsCallable(functions, "verifyRazorpayPayment");
+
 const form = document.getElementById("checkoutForm");
 const summaryEl = document.getElementById("orderSummary");
 
@@ -199,13 +208,36 @@ form.addEventListener("submit", async (e) => {
     }
 
     // ---------- Online Payment (Razorpay) ----------
+    // The order is created server-side (createRazorpayOrder) so the
+    // amount can't be tampered with client-side, and it's only written
+    // to Firestore after verifyRazorpayPayment confirms the payment
+    // signature on the server — see functions/index.js.
+
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.textContent = "Starting Payment...";
+
+    let rzpOrder;
+
+    try {
+      const { data } = await createRazorpayOrder({ amount: totalAmount });
+      rzpOrder = data;
+    } catch (error) {
+      console.log(error);
+      alert("Could not start payment. Please try again.");
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = "Place Order";
+      return;
+    }
+
+    placeOrderBtn.textContent = "Place Order";
+    placeOrderBtn.disabled = false;
+
     const options = {
 
-      key: "rzp_test_TL1OXROVimUJpK",
-
-      amount: totalAmount * 100,
-
-      currency: "INR",
+      key: rzpOrder.keyId,
+      order_id: rzpOrder.orderId,
+      amount: rzpOrder.amount,
+      currency: rzpOrder.currency,
 
       name: "Bestify Store",
 
@@ -215,9 +247,22 @@ form.addEventListener("submit", async (e) => {
 
         try {
 
-          await saveOrderAndFinish({
-            paymentId: response.razorpay_payment_id
+          const { data } = await verifyRazorpayPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            orderData: {
+              customerName,
+              mobile,
+              address,
+              products,
+              cartItemIds: (!buyNowProductId && cartSnapshot)
+                ? cartSnapshot.docs.map(d => d.id)
+                : []
+            }
           });
+
+          window.location.href = `payment-success.html?orderId=${data.orderId}&method=online`;
 
         } catch (error) {
           console.log(error);
